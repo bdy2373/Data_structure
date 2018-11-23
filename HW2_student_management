@@ -1,0 +1,164 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct listNode *listPointer;
+typedef struct listNode {
+	int snum;
+	char name[20];
+	listPointer link;
+} listNode;
+
+listPointer first = NULL, last = NULL;
+
+void _insert(listPointer *first, int snum, char name[20]);
+void _delete(listPointer *first, listPointer trail, listPointer x);
+
+int main (void){
+	int i = 0, work, workDel;
+	int i_snum, d_snum;
+	char i_name[20], d_name[20];
+	listPointer x = NULL, trail;
+
+	printf("1. 학생 추가하기\n2. 학번으로 찾기\n3. 이름으로 찾기\n4. 학생 삭제하기");
+	
+	while(1){
+		working:
+		printf("\n명령에 해당하는 번호를 입력해 주세요 : ");
+		scanf_s("%d",&work);
+
+		if(work==1){
+			printf("학번 이름 : ");
+			scanf_s("%d %s", &i_snum, i_name, 20);
+			if(first==NULL){
+				_insert(&first, i_snum, i_name);
+				x = first;
+			}
+			else{
+				_insert(&first, i_snum, i_name);
+				x = x->link;
+				trail = NULL;
+			}
+			x = first;
+		}
+		else if(work==2){
+			printf("학생의 학번을 입력해주세요 : ");
+			scanf_s("%d",&d_snum);
+			while (x)
+				{
+					if (x->snum == d_snum)
+					{
+						printf("학생의 이름은 %s 입니다.\n",x->name);
+						goto working;
+					}
+					else
+					{
+						trail = x;
+						x = x->link;
+					}
+				}
+				printf("\n학생을 찾을 수 없습니다.\n");
+				x = first;
+		}
+		else if(work==3){
+			printf("학생의 이름을 입력해주세요 : ");
+			scanf_s("%s",d_name,20);
+			while (x)
+				{
+					if (strcmp(x->name, d_name) == 0)
+					{
+						printf("학생의 학번은 %d 입니다.\n",x->snum);
+						goto working;
+					}
+					else
+					{
+						trail = x;
+						x = x->link;
+					}
+				}
+				printf("\n학생을 찾을 수 없습니다.\n");
+				x = first;
+		}
+		else if(work==4){
+			printf("삭제할 학생의 학번을 입력하려면 1을, 이름을 입력하려면 2를 입력하세요 : ");
+			scanf_s("%d", &workDel);
+
+			if(workDel==1){
+				printf("삭제할 학생의 학번을 입력하세요 : ");
+				scanf_s("%d", &d_snum);
+
+				while (x)
+				{
+					if (x->snum == d_snum)
+					{
+						_delete(&first, trail, x);
+						goto working;
+					}
+					else
+					{
+						trail = x;
+						x = x->link;
+					}
+				}
+				printf("학생을 찾을 수 없습니다.\n");
+				x = first;
+				}
+			else{
+				printf("삭제할 학생의 이름을 입력하세요 : ");
+				scanf_s("%s", &d_name, 20);
+				while (x)
+				{
+					if (strcmp(x->name, d_name) == 0)
+					{
+						_delete(&first, trail, x);
+						goto working;
+					}
+					else
+					{
+						trail = x;
+						x = x->link;
+					}
+				}
+				printf("\n학생을 찾을 수 없습니다.\n");
+				x = first;
+			}
+		}
+		else {
+			printf("보기에 있는 번호를 입력해주세요");
+		}
+		
+	}
+
+	return 0;
+}
+
+void _insert(listPointer *first, int snum, char name[20])
+{
+	listPointer temp;
+
+	temp = (listPointer)malloc(sizeof(listNode));
+	temp->snum = snum;
+	strcpy(temp->name, name);
+
+	if (*first)
+	{
+		temp->link = NULL;
+		last->link = temp;
+		last = temp;
+	}
+	else
+	{
+		temp->link = NULL;
+		*first = temp;
+		last = temp;
+	}
+}
+void _delete(listPointer *first, listPointer trail, listPointer x)
+{
+	if (trail)
+		trail->link = x->link;
+	else
+		*first = (*first)->link;
+
+	free(x);
+}
