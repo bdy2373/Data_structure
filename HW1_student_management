@@ -1,0 +1,68 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+ 
+#define MAX_NAME 20 //이름의 최대 길이
+ 
+typedef struct Studentinfo Student;
+struct Studentinfo{
+	char name[MAX_NAME];
+	int snum;
+};
+ 
+int main(void) {
+ 
+	int studentnum;
+	Student *array;
+	int i;
+	int menu;
+	int findsnum;
+	char findname[MAX_NAME];
+	
+	printf("전체 학생 수를 입력해 주세요. : ");
+	scanf_s("%d",&studentnum);
+ 
+	array=(Student*)malloc(sizeof(Student)*studentnum);//동적할당
+	
+	//for문으로 입력한 학생 수 만큼 정보를 입력
+	for(i=0;i<studentnum;i++){
+		printf("학번을 입력하여 주세요. : ");
+		scanf_s("%d",&(array[i].snum));
+		printf("학생의 이름을 입력하여 주세요. : ");
+		scanf_s("%s",array[i].name,MAX_NAME);
+	}
+	
+	//무한대로 검색할 수 있는 루프를 만듦
+	while(1){
+		loop:
+	printf("해당하는 번호를 입력해주세요.\n1. 학번으로 찾기\n2. 이름으로 찾기\n3. 나가기\n번호:");
+	scanf_s("%d",&menu);
+	
+	if(menu==1){
+		printf("학번입력\n");
+		scanf_s("%d",&findsnum);
+		for(i=0;i<studentnum;i++){
+			if(findsnum==array[i].snum){
+				printf("찾으시는 학생의 이름은 %s입니다.\n",array[i].name);
+				goto loop; //다시 검색 초반으로 돌아가기 위한 goto
+			}
+		}
+		printf("입력하지 않은 학번입니다.\n");
+	}
+	else if(menu==2){
+		printf("이름입력\n");
+		scanf_s("%s",findname,MAX_NAME);
+		for(i=0;i<studentnum;i++){
+			if((strcmp(findname,array[i].name)) == 0){//라이브러리의 strcmp를 이용해서 문자열을 비교한다.
+				printf("찾으시는 학생의 학번은 %d입니다.\n",array[i].snum);
+				goto loop; //다시 검색 초반으로 돌아가기 위한 goto
+			}
+		}
+		printf("입력하지 않은 이름입니다.\n");
+	}
+	else{
+		break;//menu에 다른 번호(3번)가 들어오면 while문을 중지한다.
+	}
+	}	
+	return 0;
+}
